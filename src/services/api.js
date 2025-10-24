@@ -69,8 +69,8 @@ const mockApi = {
   },
   
   async createMessage({ text }) {
-    const userId = localStorage.getItem('userId')
-    const username = localStorage.getItem('username')
+    const userId = sessionStorage.getItem('userId')
+    const username = sessionStorage.getItem('username')
     const mockMessages = getMockMessages()
     const message = {
       id: nextMessageId++,
@@ -110,7 +110,7 @@ const mockApi = {
   },
   
   async deleteMessage(id) {
-    const userId = localStorage.getItem('userId')
+    const userId = sessionStorage.getItem('userId')
     const mockMessages = getMockMessages()
     const messageIndex = mockMessages.findIndex(m => m.id === parseInt(id))
     if (messageIndex === -1) {
@@ -134,7 +134,7 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token')
+  const token = sessionStorage.getItem('token')
   if (token) {
     config.headers = { ...config.headers, Authorization: `Bearer ${token}` }
   }

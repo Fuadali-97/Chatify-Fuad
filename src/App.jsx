@@ -6,7 +6,7 @@ import SideNav from './components/SideNav.jsx'
 import AuthGuard from './components/AuthGuard.jsx'
 
 export default function App() {
-  const isAuthed = Boolean(localStorage.getItem('token'))
+  const isAuthed = Boolean(sessionStorage.getItem('token'))
 
   return (
     <div className={isAuthed ? 'app-shell' : undefined}>
@@ -46,7 +46,7 @@ export default function App() {
 }
 
 function LoginGuard({ children }) {
-  const token = localStorage.getItem('token')
+  const token = sessionStorage.getItem('token')
 
   if (token) {
     return <Navigate to="/chat" replace />

@@ -5,9 +5,9 @@ import { getMessages, createMessage, deleteMessage } from '../services/api'
 export default function Chat() {
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
-  const userId = localStorage.getItem('userId')
-  const username = localStorage.getItem('username') || 'Guest'
-  const avatar = localStorage.getItem('avatar') || 'https://i.pravatar.cc/200'
+  const userId = sessionStorage.getItem('userId')
+  const username = sessionStorage.getItem('username') || 'Guest'
+  const avatar = sessionStorage.getItem('avatar') || 'https://i.pravatar.cc/200'
   const chatListRef = useRef(null)
 
   async function load() { 
@@ -44,13 +44,17 @@ export default function Chat() {
 
   return (
     <div className="chat-wrap">
+      <header className="chat-header">
+        <img src={avatar} alt="avatar" className="chat-avatar" />
+        <span className="chat-username">{username}</span>
+      </header>
       <div className="chat-list" ref={chatListRef}>
         {messages.map(m => {
           const mine = String(m.userId) === String(userId)
           return (
             <div key={m.id} className={`msg ${mine ? 'mine' : 'other'}`}>
               <img 
-                src={mine ? avatar : 'https://i.pravatar.cc/200?u=bot'} 
+                src={mine ? (avatar || 'https://i.pravatar.cc/200') : 'https://i.pravatar.cc/200?u=bot'} 
                 alt="avatar" 
                 className="msg-avatar" 
               />

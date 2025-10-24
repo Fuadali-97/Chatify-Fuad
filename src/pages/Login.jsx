@@ -14,16 +14,16 @@ export default function Login() {
       const { data } = await login(f)
       
       if (data.user) {
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('userId', data.user.id)
-        localStorage.setItem('username', data.user.username)
-        localStorage.setItem('avatar', 'https://i.pravatar.cc/200')
+        sessionStorage.setItem('token', data.token)
+        sessionStorage.setItem('userId', data.user.id)
+        sessionStorage.setItem('username', data.user.username)
+        sessionStorage.setItem('avatar', 'https://i.pravatar.cc/200')
       } else {
         const payload = jwtDecode(data.token)
-        localStorage.setItem('token', data.token)
-        localStorage.setItem('userId', payload?.sub || '')
-        localStorage.setItem('username', payload?.username || f.username)
-        localStorage.setItem('avatar', 'https://i.pravatar.cc/200')
+        sessionStorage.setItem('token', data.token)
+        sessionStorage.setItem('userId', payload?.sub || '')
+        sessionStorage.setItem('username', payload?.username || f.username)
+        sessionStorage.setItem('avatar', 'https://i.pravatar.cc/200')
       }
       
       location.assign('/chat')

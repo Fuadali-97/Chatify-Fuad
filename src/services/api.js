@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const isDev = true
+const isDev = import.meta.env.MODE === 'development'
 
 async function ensureCsrf() {
   try { 

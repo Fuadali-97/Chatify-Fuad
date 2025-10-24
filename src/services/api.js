@@ -9,31 +9,31 @@ async function ensureCsrf() {
 }
 
 const getMockUsers = () => {
-  const stored = localStorage.getItem('mockUsers')
+  const stored = sessionStorage.getItem('mockUsers')
   if (!stored) {
     const defaultUsers = [{ id: 1, username: 'testuser', email: 'test@example.com', password: 'testpass' }]
-    localStorage.setItem('mockUsers', JSON.stringify(defaultUsers))
-    localStorage.setItem('nextUserId', '2')
+    sessionStorage.setItem('mockUsers', JSON.stringify(defaultUsers))
+    sessionStorage.setItem('nextUserId', '2')
     return defaultUsers
   }
   return JSON.parse(stored)
 }
 
 const saveMockUsers = (users) => {
-  localStorage.setItem('mockUsers', JSON.stringify(users))
+  sessionStorage.setItem('mockUsers', JSON.stringify(users))
 }
 
 const getMockMessages = () => {
-  const stored = localStorage.getItem('mockMessages')
+  const stored = sessionStorage.getItem('mockMessages')
   return stored ? JSON.parse(stored) : []
 }
 
 const saveMockMessages = (messages) => {
-  localStorage.setItem('mockMessages', JSON.stringify(messages))
+  sessionStorage.setItem('mockMessages', JSON.stringify(messages))
 }
 
-let nextUserId = parseInt(localStorage.getItem('nextUserId') || '1')
-let nextMessageId = parseInt(localStorage.getItem('nextMessageId') || '1')
+let nextUserId = parseInt(sessionStorage.getItem('nextUserId') || '1')
+let nextMessageId = parseInt(sessionStorage.getItem('nextMessageId') || '1')
 
 const mockApi = {
   async registerUser({ username, email, password }) {
@@ -44,7 +44,7 @@ const mockApi = {
     const user = { id: nextUserId++, username, email, password }
     mockUsers.push(user)
     saveMockUsers(mockUsers)
-    localStorage.setItem('nextUserId', nextUserId.toString())
+    sessionStorage.setItem('nextUserId', nextUserId.toString())
     return { data: { message: 'User registered successfully' } }
   },
   
@@ -105,7 +105,7 @@ const mockApi = {
     mockMessages.push(botMessage)
     
     saveMockMessages(mockMessages)
-    localStorage.setItem('nextMessageId', nextMessageId.toString())
+    sessionStorage.setItem('nextMessageId', nextMessageId.toString())
     return { data: message }
   },
   

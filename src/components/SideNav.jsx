@@ -8,6 +8,7 @@ export default function SideNav() {
     sessionStorage.removeItem('userId')
     sessionStorage.removeItem('username')
     sessionStorage.removeItem('avatar')
+  
     window.location.href = "/login"
   }
 

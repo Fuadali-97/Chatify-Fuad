@@ -29,8 +29,14 @@ export default function Chat() {
 
   async function send(e) {
     e.preventDefault()
-    const clean = DOMPurify.sanitize(text)
-    if (!clean.trim()) return
+    if (!text.trim()) return
+    
+  
+    const clean = text
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;')
     
     await createMessage({ text: clean })
     setText('')

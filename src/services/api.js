@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const isDev = true // Använd alltid mock-API för enkelhet
+const isDev = true
 
 async function ensureCsrf() {
   try { 

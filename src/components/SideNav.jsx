@@ -8,7 +8,7 @@ function handleLogout() {
   sessionStorage.removeItem('userId')
   sessionStorage.removeItem('username')
   sessionStorage.removeItem('avatar')
-  navigate("/login")
+  window.location.href = "/login"
 }
 
   return (

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const isDev = import.meta.env.MODE === 'development'
+const isDev = true
 
 async function ensureCsrf() {
   try { 
@@ -45,6 +45,11 @@ const mockApi = {
     mockUsers.push(user)
     saveMockUsers(mockUsers)
     sessionStorage.setItem('nextUserId', nextUserId.toString())
+    
+    // Lägg till CSRF-token vid registrering
+    const csrfToken = `csrf-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    sessionStorage.setItem('csrfToken', csrfToken)
+    
     return { data: { message: 'User registered successfully' } }
   },
   
@@ -54,7 +59,22 @@ const mockApi = {
     if (!user) {
       throw { response: { data: { message: 'Invalid credentials' } } }
     }
-    const token = `mock-token-${user.id}-${Date.now()}`
+    
+    // Generera riktig JWT-format token
+    const header = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }))
+    const payload = btoa(JSON.stringify({ 
+      sub: user.id.toString(), 
+      username: user.username, 
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 timmar
+    }))
+    const signature = btoa("mock-signature")
+    const token = `${header}.${payload}.${signature}`
+    
+    // Lägg till CSRF-token
+    const csrfToken = `csrf-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    sessionStorage.setItem('csrfToken', csrfToken)
+    
     return { 
       data: { 
         token,

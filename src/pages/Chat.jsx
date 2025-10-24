@@ -31,7 +31,6 @@ export default function Chat() {
     e.preventDefault()
     if (!text.trim()) return
     
-  
     const clean = text
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')

@@ -39,30 +39,13 @@ export default function Chat() {
     const clean = DOMPurify.sanitize(userText)
 
     try {
-      console.log('Försöker skicka meddelande:', clean)
       const newMsg = await createMessage({ message: clean })
-      console.log('Meddelande skickat:', newMsg)
-
       setMessages(prev => [...prev, newMsg])
-
-      const botMessage = {
-        id: crypto.randomUUID(),
-        userId: 'AutoBot',
-        username: 'AutoBot',
-        avatar: 'https://i.pravatar.cc/200?img=12',
-        message: generateBotReply(userText)
-      }
-
-      setTimeout(() => {
-        setMessages(prev => [...prev, botMessage])
-      }, 1000)
-
       setText('')
 
     } catch (err) {
       console.error('Kunde inte skicka meddelande', err)
-      console.error('Fel-detaljer:', err.response?.data || err.message)
-      alert(`Kunde inte skicka meddelande: ${err.response?.data?.message || err.message}`)
+      alert('Kunde inte skicka meddelande. Testa logga ut och in igen.')
     }
   }
 

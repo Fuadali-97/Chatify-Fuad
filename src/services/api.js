@@ -44,6 +44,7 @@ export async function getMessages() {
 }
 
 export async function createMessage({ message }) {
+  await getCSRF()
   const csrfToken = sessionStorage.getItem('csrfToken')
   const res = await api.post(
     '/messages',

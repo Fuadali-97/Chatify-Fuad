@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import DOMPurify from 'dompurify'
-import { getMessages, createMessage, deleteMessage } from '../services/api'
+import { getMessages, createMessage, createBotMessage, deleteMessage } from '../services/api'
 
 export default function Chat() {
   const [messages, setMessages] = useState([])
@@ -65,7 +65,7 @@ export default function Chat() {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#x27;')
     
-    await createMessage({ text: botClean })
+    await createBotMessage({ text: botClean })
     await load()
   }
 
@@ -82,7 +82,8 @@ export default function Chat() {
       </header>
       <div className="chat-list" ref={chatListRef}>
         {messages.map(m => {
-          const mine = String(m.userId) === String(userId)
+          const isAutoBot = m.username === 'AutoBot' || (m.user && m.user.username === 'AutoBot')
+          const mine = !isAutoBot && String(m.userId) === String(userId)
           return (
             <div key={m.id} className={`msg ${mine ? 'mine' : 'other'}`}>
               <img 

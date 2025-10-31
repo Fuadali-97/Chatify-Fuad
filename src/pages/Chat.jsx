@@ -38,15 +38,23 @@ export default function Chat() {
     try {
       await createMessage({ message: clean })
 
+      const currentUserId = sessionStorage.getItem('userId')
       const myMsg = {
         id: crypto.randomUUID(),
-        userId: sessionStorage.getItem('userId'),
+        userId: currentUserId,
         username: sessionStorage.getItem('username'),
         avatar: sessionStorage.getItem('avatar') || 'https://i.pravatar.cc/200',
         message: clean
       }
+      
       setMessages(prev => [...prev, myMsg])
       setText('')
+      
+      setTimeout(() => {
+        if (chatListRef.current) {
+          chatListRef.current.scrollTop = chatListRef.current.scrollHeight
+        }
+      }, 100)
 
       const botMessage = {
         id: crypto.randomUUID(),
@@ -56,7 +64,14 @@ export default function Chat() {
         message: generateBotReply(clean)
       }
 
-      setTimeout(() => setMessages(prev => [...prev, botMessage]), 1000)
+      setTimeout(() => {
+        setMessages(prev => [...prev, botMessage])
+        setTimeout(() => {
+          if (chatListRef.current) {
+            chatListRef.current.scrollTop = chatListRef.current.scrollHeight
+          }
+        }, 100)
+      }, 1000)
 
     } catch (err) {
       console.error('Kunde inte skicka meddelande', err)
@@ -117,7 +132,7 @@ export default function Chat() {
               <div
                 className="bubble"
                 dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(m.message || m.text),
+                  __html: DOMPurify.sanitize(m.message || m.text || ''),
                 }}
               />
               {isMine && <button className="delete" onClick={() => remove(m.id)}>🗑</button>}

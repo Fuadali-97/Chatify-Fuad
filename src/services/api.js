@@ -55,5 +55,11 @@ export async function createMessage({ message }) {
 }
 
 export async function deleteMessage(id) {
-  return api.delete(`/messages/${id}`)
+  await getCSRF()
+  const csrfToken = sessionStorage.getItem('csrfToken')
+  const res = await api.delete(
+    `/messages/${id}`,
+    { headers: { 'X-CSRF-Token': csrfToken } }
+  )
+  return res.data
 }

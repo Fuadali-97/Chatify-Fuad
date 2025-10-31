@@ -36,21 +36,17 @@ export default function Chat() {
     if (!text.trim()) return
     
     const userText = text.trim()
-    const clean = text
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#x27;')
+    const clean = DOMPurify.sanitize(userText)
     
-    await createMessage({ text: clean })
+    await createMessage({ message: clean })
     setText('')
     await load()
+    
     const botMessage = {
       id: crypto.randomUUID(),
       userId: 'AutoBot',
       username: 'AutoBot',
       avatar: 'https://i.pravatar.cc/200?img=12',
-      text: `AutoBot: jag hörde dig säga "${userText}"`,
       message: `AutoBot: jag hörde dig säga "${userText}"`
     }
     
@@ -75,8 +71,8 @@ export default function Chat() {
           const msgUserId = String(m.userId || m.user?.id || '')
           const msgUsername = (m.username || m.user?.username || '').toLowerCase()
           const currentUserId = String(userId || '')
-          const isAutoBot = msgUsername === 'autobot' || msgUserId === 'AutoBot' || m.userId === 'AutoBot'
-          const isMine = !isAutoBot && msgUserId === currentUserId && currentUserId !== '' && msgUserId !== ''
+          const isAutoBot = msgUsername === 'autobot' || msgUserId === 'AutoBot'
+          const isMine = !isAutoBot && msgUserId === currentUserId && currentUserId !== ''
           
           return (
             <div key={m.id} className={`msg ${isMine ? 'mine' : ''}`}>
@@ -85,7 +81,12 @@ export default function Chat() {
                 alt="avatar" 
                 className="msg-avatar" 
               />
-              <div className="bubble" dangerouslySetInnerHTML={{ __html: m.text || m.message }} />
+              <div
+                className="bubble"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(m.message || m.text),
+                }}
+              />
               {isMine && <button className="delete" onClick={() => remove(m.id)}>🗑</button>}
             </div>
           )

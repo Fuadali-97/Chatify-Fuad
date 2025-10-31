@@ -121,7 +121,12 @@ export default function Chat() {
         <input 
           value={text} 
           onChange={e => setText(e.target.value)} 
-          placeholder="Skriv ett meddelande..." 
+          placeholder="Skriv ett meddelande..."
+          onKeyDown={e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              send(e)
+            }
+          }}
         />
         <button type="submit">Skicka</button>
       </form>

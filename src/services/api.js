@@ -11,6 +11,15 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers = { ...config.headers, Authorization: `Bearer ${token}` }
   }
+  
+  // Lägg till CSRF-token för POST, PUT, DELETE, PATCH requests
+  if (['post', 'put', 'delete', 'patch'].includes(config.method?.toLowerCase())) {
+    const csrfToken = sessionStorage.getItem('csrfToken')
+    if (csrfToken) {
+      config.headers = { ...config.headers, 'X-CSRF-Token': csrfToken }
+    }
+  }
+  
   return config
 })
 
@@ -45,25 +54,12 @@ export async function getMessages() {
 
 export async function createMessage({ message }) {
   await getCSRF()
-  const csrfToken = sessionStorage.getItem('csrfToken')
-  const res = await api.post(
-    '/messages',
-    { message },
-    { 
-      headers: { 
-        'X-CSRF-Token': csrfToken
-      } 
-    }
-  )
+  const res = await api.post('/messages', { message })
   return res.data
 }
 
 export async function deleteMessage(id) {
   await getCSRF()
-  const csrfToken = sessionStorage.getItem('csrfToken')
-  const res = await api.delete(
-    `/messages/${id}`,
-    { headers: { 'X-CSRF-Token': csrfToken } }
-  )
+  const res = await api.delete(`/messages/${id}`)
   return res.data
 }

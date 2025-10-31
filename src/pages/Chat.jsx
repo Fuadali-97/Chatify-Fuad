@@ -34,25 +34,46 @@ export default function Chat() {
   async function send(e) {
     e.preventDefault()
     if (!text.trim()) return
-    
+
     const userText = text.trim()
     const clean = DOMPurify.sanitize(userText)
-    
-    await createMessage({ message: clean })
-    setText('')
-    await load()
-    
-    const botMessage = {
-      id: crypto.randomUUID(),
-      userId: 'AutoBot',
-      username: 'AutoBot',
-      avatar: 'https://i.pravatar.cc/200?img=12',
-      message: `AutoBot: jag hörde dig säga "${userText}"`
+
+    try {
+      const newMsg = await createMessage({ message: clean })
+
+      setMessages(prev => [...prev, newMsg.data || newMsg])
+
+      const botMessage = {
+        id: crypto.randomUUID(),
+        userId: 'AutoBot',
+        username: 'AutoBot',
+        avatar: 'https://i.pravatar.cc/200?img=12',
+        message: generateBotReply(userText)
+      }
+
+      setTimeout(() => {
+        setMessages(prev => [...prev, botMessage])
+      }, 1000)
+
+      setText('')
+
+    } catch (err) {
+      console.error('Kunde inte skicka meddelande', err)
     }
-    
-    setTimeout(() => {
-      setMessages(prev => [...prev, botMessage])
-    }, 1000)
+  }
+
+  function generateBotReply(userText) {
+    const replies = [
+      "Det låter spännande!",
+      "Intressant! Berätta mer.",
+      "Tack för att du delade det.",
+      "Det är en bra poäng!",
+      "Intressant perspektiv!",
+      "Kan du utveckla det mer?",
+      "Det låter som en bra idé!"
+    ]
+    const random = replies[Math.floor(Math.random() * replies.length)]
+    return `AutoBot: ${random}`
   }
 
   async function remove(id) { 

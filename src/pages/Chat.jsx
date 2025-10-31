@@ -5,9 +5,6 @@ import { getMessages, createMessage, deleteMessage } from '../services/api'
 export default function Chat() {
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
-  const userId = sessionStorage.getItem('userId')
-  const username = sessionStorage.getItem('username') || 'Guest'
-  const avatar = sessionStorage.getItem('avatar') || 'https://i.pravatar.cc/200'
   const chatListRef = useRef(null)
 
   async function load() { 
@@ -70,21 +67,22 @@ export default function Chat() {
   return (
     <div className="chat-wrap">
       <header className="chat-header">
-        <img src={avatar} alt="avatar" className="chat-avatar" />
-        <span className="chat-username">{username}</span>
+        <img src={sessionStorage.getItem('avatar') || 'https://i.pravatar.cc/200'} alt="avatar" className="chat-avatar" />
+        <span className="chat-username">{sessionStorage.getItem('username') || 'Guest'}</span>
       </header>
       <div className="chat-list" ref={chatListRef}>
         {messages.map(m => {
           const msgUserId = String(m.userId || m.user?.id || '')
           const msgUsername = (m.username || m.user?.username || '').toLowerCase()
-          const currentUserId = String(userId || '')
+          const currentUserId = String(sessionStorage.getItem('userId') || '')
+          const currentAvatar = sessionStorage.getItem('avatar') || 'https://i.pravatar.cc/200'
           const isAutoBot = msgUsername === 'autobot' || msgUserId === 'AutoBot'
           const isMine = !isAutoBot && msgUserId === currentUserId && currentUserId !== ''
           
           return (
             <div key={m.id} className={`msg ${isMine ? 'mine' : ''}`}>
               <img 
-                src={isMine ? (avatar || 'https://i.pravatar.cc/200') : (m.avatar || 'https://i.pravatar.cc/200?img=12')} 
+                src={isMine ? currentAvatar : (m.avatar || 'https://i.pravatar.cc/200?img=12')} 
                 alt="avatar" 
                 className="msg-avatar" 
               />

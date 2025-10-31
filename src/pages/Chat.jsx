@@ -32,7 +32,7 @@ export default function Chat() {
   useEffect(() => { load() }, [])
 
   async function send(e) {
-    e.preventDefault()
+    e?.preventDefault?.()
     if (!text.trim()) return
 
     const userText = text.trim()

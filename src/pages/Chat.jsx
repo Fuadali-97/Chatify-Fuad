@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import DOMPurify from 'dompurify'
-import { getMessages, createMessage, createBotMessage, deleteMessage } from '../services/api'
+import { getMessages, createMessage, deleteMessage } from '../services/api'
 
 export default function Chat() {
   const [messages, setMessages] = useState([])
@@ -35,6 +35,7 @@ export default function Chat() {
     e.preventDefault()
     if (!text.trim()) return
     
+    const userText = text.trim()
     const clean = text
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -44,29 +45,18 @@ export default function Chat() {
     await createMessage({ text: clean })
     setText('')
     await load()
+    const botMessage = {
+      id: crypto.randomUUID(),
+      userId: 'AutoBot',
+      username: 'AutoBot',
+      avatar: 'https://i.pravatar.cc/200?img=12',
+      text: `AutoBot: jag hörde dig säga "${userText}"`,
+      message: `AutoBot: jag hörde dig säga "${userText}"`
+    }
     
-    const autoReplies = [
-      "Intressant! Berätta mer.",
-      "Jag förstår vad du menar.",
-      "Det låter spännande!",
-      "Tack för att du delade det.",
-      "Vad tycker du om det?",
-      "Det är en bra poäng!",
-      "Jag håller med dig.",
-      "Kan du utveckla det mer?",
-      "Det låter som en bra idé!",
-      "Intressant perspektiv!"
-    ]
-    
-    const botReply = autoReplies[Math.floor(Math.random() * autoReplies.length)]
-    const botClean = botReply
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#x27;')
-    
-    await createBotMessage({ text: botClean })
-    await load()
+    setTimeout(() => {
+      setMessages(prev => [...prev, botMessage])
+    }, 1000)
   }
 
   async function remove(id) { 
@@ -91,11 +81,11 @@ export default function Chat() {
           return (
             <div key={m.id} className={`msg ${isMine ? 'mine' : 'other'}`}>
               <img 
-                src={isMine ? (avatar || 'https://i.pravatar.cc/200') : 'https://i.pravatar.cc/200?u=bot'} 
+                src={isMine ? (avatar || 'https://i.pravatar.cc/200') : (m.avatar || 'https://i.pravatar.cc/200?img=12')} 
                 alt="avatar" 
                 className="msg-avatar" 
               />
-              <div className="bubble" dangerouslySetInnerHTML={{ __html: m.text }} />
+              <div className="bubble" dangerouslySetInnerHTML={{ __html: m.text || m.message }} />
               {isMine && <button className="delete" onClick={() => remove(m.id)}>🗑</button>}
             </div>
           )

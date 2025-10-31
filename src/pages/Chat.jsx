@@ -12,8 +12,12 @@ export default function Chat() {
 
   async function load() { 
     try {
-      const { data } = await getMessages()
-      setMessages(data || [])
+      const response = await getMessages()
+      let messages = []
+      if (response?.data) {
+        messages = Array.isArray(response.data) ? response.data : response.data.messages || []
+      }
+      setMessages(messages)
     } catch (err) {
       console.error('Kunde inte hämta meddelanden', err)
     }
@@ -40,6 +44,10 @@ export default function Chat() {
     await createMessage({ text: clean })
     setText('')
     await load()
+    
+    setTimeout(async () => {
+      await load()
+    }, 1500)
   }
 
   async function remove(id) { 

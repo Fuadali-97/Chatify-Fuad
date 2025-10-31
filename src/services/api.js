@@ -36,7 +36,11 @@ export async function login({ username, password }) {
 }
 
 export async function getMessages() {
-  return api.get('/messages')
+  const res = await api.get('/messages')
+  if (res.data?.messages) {
+    return { data: res.data.messages }
+  }
+  return res
 }
 
 export async function createMessage({ text }) {

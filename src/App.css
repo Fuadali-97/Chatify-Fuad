@@ -221,27 +221,41 @@ padding: 24px;
 .msg {
 display: flex;
 align-items: flex-end;
-gap: 12px;
+gap: 10px;
+margin: 8px 0;
 max-width: 80%;
 align-self: flex-start;
 }
 
 .msg.mine {
-justify-content: flex-end;
+flex-direction: row-reverse;
 align-self: flex-end;
 margin-left: auto;
 }
 
+.msg-avatar {
+width: 40px;
+height: 40px;
+border-radius: 50%;
+object-fit: cover;
+flex-shrink: 0;
+}
+
 .bubble {
 padding: 10px 16px;
-border-radius: var(--radius);
-background: var(--bg-dark);
-color: var(--text);
+border-radius: 16px;
+background: #1a2536;
+color: #fff;
+max-width: 70%;
+word-wrap: break-word;
 }
 
 .msg.mine .bubble {
-background: linear-gradient(135deg, var(--primary), var(--accent));
-color: #fff;
+background: #2c3e50;
+}
+
+.msg:not(.mine) .bubble {
+background: #243447;
 }
 
 .delete {

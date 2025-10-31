@@ -37,11 +37,23 @@ export default function Chat() {
 
     const userText = text.trim()
     const clean = DOMPurify.sanitize(userText)
+    const currentUserId = sessionStorage.getItem('userId')
+    const currentUsername = sessionStorage.getItem('username') || 'Guest'
+    const currentAvatar = sessionStorage.getItem('avatar') || 'https://i.pravatar.cc/200'
 
     try {
-      const newMsg = await createMessage({ message: clean })
+      await createMessage({ message: clean })
 
-      setMessages(prev => [...prev, newMsg.data || newMsg])
+      const myMessage = {
+        id: crypto.randomUUID(),
+        userId: currentUserId,
+        username: currentUsername,
+        avatar: currentAvatar,
+        message: clean
+      }
+
+      setMessages(prev => [...prev, myMessage])
+      setText('')
 
       const botMessage = {
         id: crypto.randomUUID(),
@@ -55,10 +67,9 @@ export default function Chat() {
         setMessages(prev => [...prev, botMessage])
       }, 1000)
 
-      setText('')
-
     } catch (err) {
       console.error('Kunde inte skicka meddelande', err)
+      alert('Kunde inte skicka meddelande. Försök igen.')
     }
   }
 

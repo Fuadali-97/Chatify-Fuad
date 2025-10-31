@@ -93,12 +93,19 @@ export default function Chat() {
       </header>
       <div className="chat-list" ref={chatListRef}>
         {messages.map(m => {
-          const msgUserId = String(m.userId || m.user?.id || '').trim()
-          const msgUsername = (m.username || m.user?.username || '').toLowerCase().trim()
-          const currentUserId = String(sessionStorage.getItem('userId') || '').trim()
+          const currentUserId = sessionStorage.getItem('userId') || ''
+          const msgUserId = m.userId || m.user?.id || ''
+          const msgUsername = (m.username || m.user?.username || '').toLowerCase()
           const currentAvatar = sessionStorage.getItem('avatar') || 'https://i.pravatar.cc/200'
-          const isAutoBot = msgUsername === 'autobot' || msgUserId === 'AutoBot' || msgUserId.toLowerCase() === 'autobot'
-          const isMine = !isAutoBot && msgUserId === currentUserId && currentUserId !== '' && msgUserId !== ''
+          
+          const isAutoBot = msgUsername === 'autobot' || 
+                          String(msgUserId) === 'AutoBot' || 
+                          String(msgUserId).toLowerCase() === 'autobot'
+          
+          const isMine = !isAutoBot && 
+                       currentUserId && 
+                       msgUserId && 
+                       String(msgUserId) === String(currentUserId)
           
           return (
             <div key={m.id} className={`msg ${isMine ? 'mine' : ''}`}>

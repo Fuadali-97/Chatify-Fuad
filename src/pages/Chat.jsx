@@ -82,17 +82,21 @@ export default function Chat() {
       </header>
       <div className="chat-list" ref={chatListRef}>
         {messages.map(m => {
-          const isAutoBot = m.username === 'AutoBot' || (m.user && m.user.username === 'AutoBot')
-          const mine = !isAutoBot && String(m.userId) === String(userId)
+          const msgUserId = String(m.userId || m.user?.id || '')
+          const msgUsername = (m.username || m.user?.username || '').toLowerCase()
+          const currentUserId = String(userId || '')
+          const isAutoBot = msgUsername === 'autobot'
+          const isMine = !isAutoBot && msgUserId === currentUserId && currentUserId !== ''
+          
           return (
-            <div key={m.id} className={`msg ${mine ? 'mine' : 'other'}`}>
+            <div key={m.id} className={`msg ${isMine ? 'mine' : 'other'}`}>
               <img 
-                src={mine ? (avatar || 'https://i.pravatar.cc/200') : 'https://i.pravatar.cc/200?u=bot'} 
+                src={isMine ? (avatar || 'https://i.pravatar.cc/200') : 'https://i.pravatar.cc/200?u=bot'} 
                 alt="avatar" 
                 className="msg-avatar" 
               />
               <div className="bubble" dangerouslySetInnerHTML={{ __html: m.text }} />
-              {mine && <button className="delete" onClick={() => remove(m.id)}>🗑</button>}
+              {isMine && <button className="delete" onClick={() => remove(m.id)}>🗑</button>}
             </div>
           )
         })}

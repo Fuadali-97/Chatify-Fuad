@@ -39,7 +39,9 @@ export default function Chat() {
     const clean = DOMPurify.sanitize(userText)
 
     try {
+      console.log('Försöker skicka meddelande:', clean)
       const newMsg = await createMessage({ message: clean })
+      console.log('Meddelande skickat:', newMsg)
 
       setMessages(prev => [...prev, newMsg])
 
@@ -59,6 +61,8 @@ export default function Chat() {
 
     } catch (err) {
       console.error('Kunde inte skicka meddelande', err)
+      console.error('Fel-detaljer:', err.response?.data || err.message)
+      alert(`Kunde inte skicka meddelande: ${err.response?.data?.message || err.message}`)
     }
   }
 

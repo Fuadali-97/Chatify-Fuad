@@ -35,7 +35,18 @@ export default function Chat() {
 
     try {
       const newMsg = await createMessage({ message: clean })
-      setMessages(prev => [...prev, newMsg])
+      const currentUserId = sessionStorage.getItem('userId')
+      const currentUsername = sessionStorage.getItem('username')
+      const currentAvatar = sessionStorage.getItem('avatar')
+      
+      const messageWithUser = {
+        ...newMsg,
+        userId: newMsg.userId || currentUserId,
+        username: newMsg.username || currentUsername,
+        avatar: newMsg.avatar || currentAvatar
+      }
+      
+      setMessages(prev => [...prev, messageWithUser])
       setText('')
 
       const botMessage = {
@@ -80,12 +91,16 @@ export default function Chat() {
       </header>
       <div className="chat-list" ref={chatListRef}>
         {messages.map(m => {
-          const msgUserId = String(m.userId || m.user?.id || '')
-          const msgUsername = (m.username || m.user?.username || '').toLowerCase()
-          const currentUserId = String(sessionStorage.getItem('userId') || '')
+          const msgUserId = String(m.userId || m.user?.id || '').trim()
+          const msgUsername = (m.username || m.user?.username || '').toLowerCase().trim()
+          const currentUserId = String(sessionStorage.getItem('userId') || '').trim()
           const currentAvatar = sessionStorage.getItem('avatar') || 'https://i.pravatar.cc/200'
-          const isAutoBot = msgUsername === 'autobot' || msgUserId === 'AutoBot'
-          const isMine = !isAutoBot && msgUserId === currentUserId && currentUserId !== ''
+          const isAutoBot = msgUsername === 'autobot' || msgUserId === 'AutoBot' || msgUserId.toLowerCase() === 'autobot'
+          const isMine = !isAutoBot && msgUserId === currentUserId && currentUserId !== '' && msgUserId !== ''
+          
+          if (m.id && currentUserId) {
+            console.log('Message:', { msgUserId, currentUserId, isMine, isAutoBot, message: m.message || m.text })
+          }
           
           return (
             <div key={m.id} className={`msg ${isMine ? 'mine' : ''}`}>

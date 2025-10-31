@@ -44,6 +44,18 @@ export default function Chat() {
     await createMessage({ text: clean })
     setText('')
     await load()
+    
+    setTimeout(async () => {
+      await load()
+    }, 1500)
+    
+    setTimeout(async () => {
+      await load()
+    }, 3000)
+    
+    setTimeout(async () => {
+      await load()
+    }, 5000)
   }
 
   async function remove(id) { 

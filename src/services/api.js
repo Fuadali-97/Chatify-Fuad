@@ -44,7 +44,8 @@ export async function getMessages() {
 }
 
 export async function createMessage({ message }) {
-  return api.post('/messages', { message })
+  const res = await api.post('/messages', { message })
+  return res.data
 }
 
 export async function deleteMessage(id) {

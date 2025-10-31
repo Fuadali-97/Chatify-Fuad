@@ -37,23 +37,11 @@ export default function Chat() {
 
     const userText = text.trim()
     const clean = DOMPurify.sanitize(userText)
-    const currentUserId = sessionStorage.getItem('userId')
-    const currentUsername = sessionStorage.getItem('username') || 'Guest'
-    const currentAvatar = sessionStorage.getItem('avatar') || 'https://i.pravatar.cc/200'
 
     try {
-      await createMessage({ message: clean })
+      const newMsg = await createMessage({ message: clean })
 
-      const myMessage = {
-        id: crypto.randomUUID(),
-        userId: currentUserId,
-        username: currentUsername,
-        avatar: currentAvatar,
-        message: clean
-      }
-
-      setMessages(prev => [...prev, myMessage])
-      setText('')
+      setMessages(prev => [...prev, newMsg])
 
       const botMessage = {
         id: crypto.randomUUID(),
@@ -67,9 +55,10 @@ export default function Chat() {
         setMessages(prev => [...prev, botMessage])
       }, 1000)
 
+      setText('')
+
     } catch (err) {
       console.error('Kunde inte skicka meddelande', err)
-      alert('Kunde inte skicka meddelande. Försök igen.')
     }
   }
 
@@ -81,7 +70,6 @@ export default function Chat() {
       "Det är en bra poäng!",
       "Intressant perspektiv!",
       "Kan du utveckla det mer?",
-      "Det låter som en bra idé!"
     ]
     const random = replies[Math.floor(Math.random() * replies.length)]
     return `AutoBot: ${random}`

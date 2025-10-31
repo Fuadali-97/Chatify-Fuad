@@ -45,17 +45,28 @@ export default function Chat() {
     setText('')
     await load()
     
-    setTimeout(async () => {
-      await load()
-    }, 1500)
+    const autoReplies = [
+      "Intressant! Berätta mer.",
+      "Jag förstår vad du menar.",
+      "Det låter spännande!",
+      "Tack för att du delade det.",
+      "Vad tycker du om det?",
+      "Det är en bra poäng!",
+      "Jag håller med dig.",
+      "Kan du utveckla det mer?",
+      "Det låter som en bra idé!",
+      "Intressant perspektiv!"
+    ]
     
-    setTimeout(async () => {
-      await load()
-    }, 3000)
+    const botReply = autoReplies[Math.floor(Math.random() * autoReplies.length)]
+    const botClean = botReply
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#x27;')
     
-    setTimeout(async () => {
-      await load()
-    }, 5000)
+    await createMessage({ text: botClean })
+    await load()
   }
 
   async function remove(id) { 

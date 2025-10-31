@@ -30,10 +30,8 @@ export default function Chat() {
 
   async function send(e) {
     e?.preventDefault?.()
-    if (!text.trim()) return
-
-    const userText = text.trim()
-    const clean = DOMPurify.sanitize(userText)
+    const clean = DOMPurify.sanitize(text || '')
+    if (!clean.trim()) return
 
     try {
       const newMsg = await createMessage({ message: clean })
@@ -45,18 +43,14 @@ export default function Chat() {
         userId: 'AutoBot',
         username: 'AutoBot',
         avatar: 'https://i.pravatar.cc/200?img=12',
-        message: generateBotReply(userText)
+        message: generateBotReply(clean)
       }
 
-      setTimeout(() => {
-        setMessages(prev => [...prev, botMessage])
-      }, 1000)
+      setTimeout(() => setMessages(p => [...p, botMessage]), 800)
 
     } catch (err) {
       console.error('Kunde inte skicka meddelande', err)
-      console.error('Error response:', err.response?.data)
-      console.error('Error status:', err.response?.status)
-      alert(`Kunde inte skicka meddelande: ${err.response?.data?.message || err.message}`)
+      alert(err?.response?.data?.message || 'Kunde inte skicka. Logga ut/in och prova igen.')
     }
   }
 

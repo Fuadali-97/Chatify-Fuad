@@ -54,7 +54,12 @@ export async function getMessages() {
 
 export async function createMessage({ message }) {
   await getCSRF()
-  const res = await api.post('/messages', { message })
+  const csrfToken = sessionStorage.getItem('csrfToken')
+  const res = await api.post(
+    '/messages',
+    { text: message, message },
+    { headers: { 'X-CSRF-Token': csrfToken } }
+  )
   return res.data
 }
 

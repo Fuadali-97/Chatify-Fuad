@@ -30,23 +30,22 @@ export default function Chat() {
 
   async function send(e) {
     e?.preventDefault?.()
-    const clean = DOMPurify.sanitize(text || '')
-    if (!clean.trim()) return
+    if (!text.trim()) return
+
+    const userText = text.trim()
+    const clean = DOMPurify.sanitize(userText)
 
     try {
-      const newMsg = await createMessage({ message: clean })
-      const currentUserId = sessionStorage.getItem('userId')
-      const currentUsername = sessionStorage.getItem('username')
-      const currentAvatar = sessionStorage.getItem('avatar')
-      
-      const messageWithUser = {
-        ...newMsg,
-        userId: newMsg.userId || currentUserId,
-        username: newMsg.username || currentUsername,
-        avatar: newMsg.avatar || currentAvatar
+      await createMessage({ message: clean })
+
+      const myMsg = {
+        id: crypto.randomUUID(),
+        userId: sessionStorage.getItem('userId'),
+        username: sessionStorage.getItem('username'),
+        avatar: sessionStorage.getItem('avatar') || 'https://i.pravatar.cc/200',
+        message: clean
       }
-      
-      setMessages(prev => [...prev, messageWithUser])
+      setMessages(prev => [...prev, myMsg])
       setText('')
 
       const botMessage = {
@@ -57,25 +56,28 @@ export default function Chat() {
         message: generateBotReply(clean)
       }
 
-      setTimeout(() => setMessages(p => [...p, botMessage]), 800)
+      setTimeout(() => setMessages(prev => [...prev, botMessage]), 1000)
 
     } catch (err) {
       console.error('Kunde inte skicka meddelande', err)
-      alert(err?.response?.data?.message || 'Kunde inte skicka. Logga ut/in och prova igen.')
+      alert('Det gick inte att skicka meddelandet. Testa logga in igen.')
     }
   }
 
   function generateBotReply(userText) {
     const replies = [
-      "Det låter spännande!",
-      "Intressant! Berätta mer.",
-      "Tack för att du delade det.",
-      "Det är en bra poäng!",
-      "Intressant perspektiv!",
-      "Kan du utveckla det mer?",
+      "Ja, det låter bra!",
+      "Okej, jag förstår.",
+      "Det låter rimligt.",
+      "Absolut 👍",
+      "Haha, jag håller med!",
+      "Mm, intressant tanke.",
+      "Låter vettigt.",
+      "Precis så!",
+      "Japp!",
+      "Sant faktiskt."
     ]
-    const random = replies[Math.floor(Math.random() * replies.length)]
-    return `AutoBot: ${random}`
+    return replies[Math.floor(Math.random() * replies.length)]
   }
 
   async function remove(id) { 
@@ -97,10 +99,6 @@ export default function Chat() {
           const currentAvatar = sessionStorage.getItem('avatar') || 'https://i.pravatar.cc/200'
           const isAutoBot = msgUsername === 'autobot' || msgUserId === 'AutoBot' || msgUserId.toLowerCase() === 'autobot'
           const isMine = !isAutoBot && msgUserId === currentUserId && currentUserId !== '' && msgUserId !== ''
-          
-          if (m.id && currentUserId) {
-            console.log('Message:', { msgUserId, currentUserId, isMine, isAutoBot, message: m.message || m.text })
-          }
           
           return (
             <div key={m.id} className={`msg ${isMine ? 'mine' : ''}`}>

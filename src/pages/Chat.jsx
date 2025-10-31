@@ -75,11 +75,11 @@ export default function Chat() {
           const msgUserId = String(m.userId || m.user?.id || '')
           const msgUsername = (m.username || m.user?.username || '').toLowerCase()
           const currentUserId = String(userId || '')
-          const isAutoBot = msgUsername === 'autobot'
-          const isMine = !isAutoBot && msgUserId === currentUserId && currentUserId !== ''
+          const isAutoBot = msgUsername === 'autobot' || msgUserId === 'AutoBot' || m.userId === 'AutoBot'
+          const isMine = !isAutoBot && msgUserId === currentUserId && currentUserId !== '' && msgUserId !== ''
           
           return (
-            <div key={m.id} className={`msg ${isMine ? 'mine' : 'other'}`}>
+            <div key={m.id} className={`msg ${isMine ? 'mine' : ''}`}>
               <img 
                 src={isMine ? (avatar || 'https://i.pravatar.cc/200') : (m.avatar || 'https://i.pravatar.cc/200?img=12')} 
                 alt="avatar" 

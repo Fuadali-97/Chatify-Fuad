@@ -10,34 +10,6 @@
 --radius: 16px;
 }
 
-.msg {
-display: flex;
-align-items: flex-start;
-margin-bottom: 10px;
-}
-
-.msg.mine {
-flex-direction: row-reverse;
-}
-
-.msg-avatar {
-width: 40px;
-height: 40px;
-border-radius: 50%;
-margin: 0 10px;
-}
-
-.bubble {
-max-width: 70%;
-padding: 10px;
-border-radius: 10px;
-background-color: #f1f1f1;
-word-wrap: break-word;
-}
-
-.msg.mine .bubble {
-background-color: #d1e7dd;
-}
 * {
 box-sizing: border-box;
 margin: 0;
@@ -251,11 +223,13 @@ display: flex;
 align-items: flex-end;
 gap: 12px;
 max-width: 80%;
+align-self: flex-start;
 }
 
 .msg.mine {
 justify-content: flex-end;
 align-self: flex-end;
+margin-left: auto;
 }
 
 .bubble {

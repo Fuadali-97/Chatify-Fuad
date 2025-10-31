@@ -40,9 +40,23 @@ export default function Chat() {
       setMessages(prev => [...prev, newMsg])
       setText('')
 
+      const botMessage = {
+        id: crypto.randomUUID(),
+        userId: 'AutoBot',
+        username: 'AutoBot',
+        avatar: 'https://i.pravatar.cc/200?img=12',
+        message: generateBotReply(userText)
+      }
+
+      setTimeout(() => {
+        setMessages(prev => [...prev, botMessage])
+      }, 1000)
+
     } catch (err) {
       console.error('Kunde inte skicka meddelande', err)
-      alert('Kunde inte skicka meddelande. Testa logga ut och in igen.')
+      console.error('Error response:', err.response?.data)
+      console.error('Error status:', err.response?.status)
+      alert(`Kunde inte skicka meddelande: ${err.response?.data?.message || err.message}`)
     }
   }
 

@@ -25,12 +25,14 @@ export async function getCSRF() {
 
 export async function register({ username, email, password }) {
   await getCSRF()
-  return api.post('/auth/register', { username, email, password })
+  const csrfToken = localStorage.getItem('csrfToken')
+  return api.post('/auth/register', { username, email, password, csrfToken })
 }
 
 export async function login({ username, password }) {
   await getCSRF()
-  return api.post('/auth/token', { username, password })
+  const csrfToken = localStorage.getItem('csrfToken')
+  return api.post('/auth/token', { username, password, csrfToken })
 }
 
 export async function getMessages() {
